@@ -1,3 +1,6 @@
+import peasy.org.apache.commons.math.*;
+import peasy.*;
+import peasy.org.apache.commons.math.geometry.*;
 import fvlib.*;
 import processing.opengl.*;
 
@@ -5,84 +8,90 @@ Point[] psa;
 Link[] lsa;
 IntegratorVerlet vi;
 SolverRelaxation rs;
-int steps=15;
+ConstantForce cf;
+PeasyCam cam;
+
+int steps=80;
 int it=0;
 float msec=0;
 PFont font;
+float strokew=3;
 
 void setup() {
-  ArrayList ps=new ArrayList();
-  ArrayList ls=new ArrayList();
-  size(600,600,OPENGL);
+  ArrayList<Point> ps=new ArrayList();
+  ArrayList<Link> ls=new ArrayList();
+  size(640,600,OPENGL);
+  cam = new PeasyCam(this, 0,0,0,1050);       // Camera Setup
+  cam.setMinimumDistance(100);
+  cam.setMaximumDistance(1500);
   
-  // Construct the curve all at once in the beginning.
-  float tx=0,ty=-300;
-  for (int i=0;i<9800;i++) {
-    tx=max(-300,min(300,tx+random(10)-5));
-    ty-=14;
-    Point p=new Point(tx,ty,0,1);
+  // Construct some random points.
+  for (int i=0;i<2000;i++) {
+    Point p=new Point(random(width)-width*.5,random(height)-height*.5,random(width)-width*.5,1,.09,200);
     ps.add(p);
-    int s=ps.size();
-    for (int j=max(0,s-7);j<s-1;j++) {
-      Point p1=(Point)ps.get(j);
-      PVector pv=p.get();
-      pv.sub(p1);
-      ls.add(new Link(p,p1,.25));
+  }
+  Point p=new Point(random(width)-width*.5,random(height)-height*.5,random(width)-width*.5,1,.09,200);
+  p.setU(true);
+  ps.add(p);
+  
+  
+  for (Point p1 : ps) {
+    float nl=0;
+    for (Point p2 : ps) {
+      if (p1 != p2) {
+        PVector pv = p2.get();
+        pv.sub(p1);
+        if (pv.mag() < 100 && nl < 6) {
+          ls.add(new Link(p1,p2,.002));
+          nl++;
+        }
+      }
     }
   }
-
+  
   vi=new IntegratorVerlet(ps);
   rs=new SolverRelaxation(ls).setFast(true);
+  cf=new ConstantForce(ps, new PVector(0,.001,0));
   // Convert ArrayLists to arrays for drawing performance.
   psa=new Point[ps.size()];
   lsa=new Link[ls.size()];
   ps.toArray(psa);
   ls.toArray(lsa);
-  
   font = createFont("Arial",12);
 }
 
 void draw() {
   float h=0;
   background(50,100);
+
   Point p;
   for (int j=steps;j>=0;j--) {
-    h=sin((float)it*.02);
     it++;
-    for (int i=psa.length-1;i>=0;i--) {
-      p=psa[i];
-      p.y+=.013;
-      p.y=min(p.y,230-h*70);
-      p.x=min(p.x,300);
-      p.x=max(p.x,-300);
-    }
-    msec*=.995;
+    msec*=.998;
     long start=System.currentTimeMillis(); //Benchmark
-    vi.step();
     rs.step();
-    msec+=(float)(System.currentTimeMillis()-start)*.005; //Benchmark
+    cf.step();
+    vi.step();
+    msec+=(float)(System.currentTimeMillis()-start)*.002; //Benchmark
   }
-  pushMatrix();
-  translate(300,300);
-  noFill();
-  stroke(255,50);
-  strokeWeight(3);
-  beginShape();
-  // Curve is interpolated every 4 points in order to speed-up
-  // drawing.
-  for (int i=psa.length-1;i>=0;i-=4) {
-    p=psa[i];
-    curveVertex(p.x,p.y);
+  
+  fill(255);
+  stroke(255,30);
+  strokeWeight(1);
+  for (Link l : lsa) {
+    line(l.p1.x,l.p1.y,l.p1.z,l.p2.x,l.p2.y,l.p2.z);
+  }
+  stroke(255,70);
+  strokeWeight(4);
+  beginShape(POINTS);
+  for (Point pt : psa) {
+    vertex(pt.x,pt.y,pt.z);
   }
   endShape();
-  stroke(255);
-  strokeWeight(2);
-  line(-300,230-h*70,300,230-h*70);
-  popMatrix();
+  cam.beginHUD();
   text("Points: "+ psa.length + " Springs: "+lsa.length,10,height-49);
   text("Steps: "+ steps,10,height-36);
   text("Total Loops: "+ steps*(psa.length+lsa.length),10,height-23);
   text("Solver Time: "+ (int)(msec*steps) + "msec",10,height-10);
+  cam.endHUD();
 }
-
-
