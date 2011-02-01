@@ -11,7 +11,7 @@ SolverRelaxation rs;
 SolverCamOverlap sco;
 PeasyCam cam;
 
-int steps=3;
+int steps=1;
 int it=0;
 float msec=0;
 PFont font;
@@ -42,16 +42,16 @@ void setup() {
         PVector pv = p2.get();
         pv.sub(p1);
         if (pv.mag() < 80 && nl < 5) {
-          ls.add(new Link(p1,p2,.02));
+          ls.add(new Link(p1,p2,.042));
           nl++;
         }
       }
     }
   }
   
-  vi=new IntegratorVerlet(ps);
+  vi=new IntegratorVerlet(ps).setF(.86);
   rs=new SolverRelaxation(ls).setFast(true);
-  sco=new SolverCamOverlap(ps,getCameraPos()).setBias(0).setRange(4).setMagnitude(.0001);
+  sco=new SolverCamOverlap(ps,getCameraPos()).setBias(0).setRange(1).setMagnitude(.017);
   // Convert ArrayLists to arrays for drawing performance.
   psa=new Point[ps.size()];
   lsa=new Link[ls.size()];
@@ -92,11 +92,7 @@ void draw() {
   }
   endShape();
   cam.beginHUD();
-  text("Use SPACE to toggle engine operation.",10,height-75);
-  text("Points: "+ psa.length,10,height-62);
-  text("Points*Points: "+ psa.length*psa.length,10,height-49);
-  text("Steps: "+ steps,10,height-36);
-  text("Total Loops: "+ steps*(psa.length+psa.length*psa.length),10,height-23);
+  text("Use SPACE to toggle engine operation.",10,height-23);
   text("Solver Time: "+ (int)(msec*steps) + "msec",10,height-10);
   if (sepon) {
     ellipse(width-10,height-10,5,5);
