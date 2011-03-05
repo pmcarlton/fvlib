@@ -39,6 +39,14 @@ public class Point extends PVector {
   protected boolean U=false;					// Unyielding flag.
   
   // Constructor using coordinates.
+  public Point(float xin, float yin, float zin) {
+    super(xin,yin,zin);
+    old=this.get();
+    sforce=new PVector(0,0,0);
+    w=w1=1f;
+  }
+  
+  // Constructor using coordinates with weight.
   public Point(float xin, float yin, float zin, float win) {
     super(xin,yin,zin);
     old=this.get();
@@ -60,6 +68,14 @@ public class Point extends PVector {
   }
   
   // Constructor using PVector.
+  public Point(PVector v) {
+    super(v.x,v.y,v.z);
+    old=this.get();
+    sforce=new PVector(0,0,0);
+    w=w1=1f;
+  }
+  
+  // Constructor using PVector with weight.
   public Point(PVector v, float win) {
     super(v.x,v.y,v.z);
     old=this.get();
@@ -160,5 +176,16 @@ public class Point extends PVector {
   	z=pos.z;
   	old=pos.get();
   	return(this);
+  }
+  
+  public float distance2To(Point p) {
+      float dx=p.x-x;
+      float dy=p.y-y;
+      float dz=p.z-z;
+      return dx*dx+dy*dy+dz*dz;
+  }
+  
+  public double distanceTo(Point p) {
+    return(Math.sqrt(distance2To(p)));
   }
 }
