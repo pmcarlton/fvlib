@@ -20,7 +20,7 @@
 //  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
 //  OF SUCH DAMAGE.
 
-package fvlib;
+package volatileprototypes.fvlib;
 
 import processing.core.*;
 import java.util.*;
@@ -38,7 +38,7 @@ private PVector f;
   }
   
   // Constructor. Uses ArrayLists and generics.
-  public ConstantForce(ArrayList<Point> pointsin, PVector fin) {
+  public ConstantForce(ArrayList<? extends Point> pointsin, PVector fin) {
     points=new Point[pointsin.size()];
     pointsin.toArray(points);
     f=fin;
@@ -52,7 +52,7 @@ private PVector f;
   
   // Various getter-setter functions.
   
-  public ConstantForce setP(ArrayList<Point> pointsin) {
+  public ConstantForce setP(ArrayList<? extends Point> pointsin) {
     points=new Point[pointsin.size()];
   	pointsin.toArray(points);
   	return(this);

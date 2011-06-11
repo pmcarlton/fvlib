@@ -21,7 +21,7 @@
 //  OF SUCH DAMAGE.
 
 
-package fvlib;
+package volatileprototypes.fvlib;
 
 import processing.core.*;
 import java.util.*;
@@ -31,8 +31,7 @@ public final class SolverStaticPair extends Solver {
 
 private Point[][] points=new Point[2][0];			     // the two points arrays
 
-private float bias=.001f, range=200;     // Bias limits the maximum force (at zero distance).
-private float range2=range*range;		 // Range specifies the maximum range below which force is applied.
+private float bias=.001f, fmult=1;       // Bias limits the maximum force (at zero distance).
 private boolean inv=false;				 // Option for inverting attract/repel forces.
 
 // Constructor. Creates empty arrays.
@@ -40,7 +39,7 @@ private boolean inv=false;				 // Option for inverting attract/repel forces.
   }
   
   // Constructor. Uses ArrayLists and generics.
-  public SolverStaticPair(ArrayList<Point> pointsin0, ArrayList<Point> pointsin1) {
+  public SolverStaticPair(ArrayList<? extends Point> pointsin0, ArrayList<? extends Point> pointsin1) {
     points[0]=new Point[pointsin0.size()];
     points[1]=new Point[pointsin1.size()];
     pointsin0.toArray(points[0]);
@@ -55,7 +54,7 @@ private boolean inv=false;				 // Option for inverting attract/repel forces.
   
   // Various getter-setter functions.
   
-  public SolverStaticPair setP(ArrayList<Point> pointsin0, ArrayList<Point> pointsin1) {
+  public SolverStaticPair setP(ArrayList<? extends Point> pointsin0, ArrayList<? extends Point> pointsin1) {
     points[0]=new Point[pointsin0.size()];
     points[1]=new Point[pointsin1.size()];
     pointsin0.toArray(points[0]);
@@ -69,21 +68,41 @@ private boolean inv=false;				 // Option for inverting attract/repel forces.
   	return(this);
   }
   
-  public SolverStaticPair setBias(float biasin) {
-  	bias=biasin;
-  	range2=range*range+bias;
-  	return(this);
+  public SolverStaticPair setP1(Point[] pointsin) {
+	points[0]=pointsin;
+	return(this);
   }
   
-  public SolverStaticPair setRange(float rangein) {
-  	range=rangein;
-  	range2=range*range+bias;
+  public SolverStaticPair setP2(Point[] pointsin) {
+	points[1]=pointsin;
+	return(this);
+  }
+  
+  public SolverStaticPair setP1(ArrayList<? extends Point> pointsin) {
+	points[0]=new Point[pointsin.size()];
+	pointsin.toArray(points[0]);
+	return(this);
+  }
+  
+  public SolverStaticPair setP2(ArrayList<? extends Point> pointsin) {
+	points[1]=new Point[pointsin.size()];
+	pointsin.toArray(points[1]);
+	return(this);
+  }
+  
+  public SolverStaticPair setBias(float biasin) {
+  	bias=biasin;
   	return(this);
   }
   
   public SolverStaticPair setInv(boolean invin) {
     inv=invin;
     return(this);
+  }
+  
+  public SolverStaticPair setFMult(float fmultin) {
+	fmult = fmultin;
+	return(this);
   }
   
   public Point[][] getP() {
@@ -94,8 +113,8 @@ private boolean inv=false;				 // Option for inverting attract/repel forces.
   	return(bias);
   }
   
-  public float getRange() {
-  	return(range);
+  public float getFMult() {
+	return(fmult);
   }
   
   @Override
@@ -120,9 +139,9 @@ private boolean inv=false;				 // Option for inverting attract/repel forces.
         dx=p2.x-x1;
         dy=p2.y-y1;
         dz=p2.z-z1;
-        d2=dx*dx+dy*dy+dz*dz+bias;
+        d2=dx*dx+dy*dy+dz*dz;
         if (d2<r1||d2<p2.r2) {
-          d2=(c1*p2.c)/d2;
+          d2=fmult*(c1*p2.c)/(d2+bias);
           lx=dx*d2;
           ly=dy*d2;
           lz=dz*d2;
@@ -154,9 +173,9 @@ private boolean inv=false;				 // Option for inverting attract/repel forces.
         dx=p2.x-x1;
         dy=p2.y-y1;
         dz=p2.z-z1;
-        d2=dx*dx+dy*dy+dz*dz+bias;
+        d2=dx*dx+dy*dy+dz*dz;
         if (d2<r1||d2<p2.r2) {
-          d2=(c1*p2.c)/d2;
+          d2=fmult*(c1*p2.c)/(d2+bias);
           lx=dx*d2;
           ly=dy*d2;
           lz=dz*d2;

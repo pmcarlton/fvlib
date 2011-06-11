@@ -29,112 +29,144 @@ import processing.core.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-public final class SolverRelaxation extends Solver {
+public final class BhKeepDistance extends Solver {
 
-private Link[] links;			// array that holds points
+private Point[] points;			// array that holds points
 private boolean fast=false;		// Option for fast/accurate spring solver.
+private float C = 1.00f;
+private float S = 0.25f;
+private float R = 1.00f, R2 = R*R;
 
 // Constructor. Creates empty arrays.
-  public SolverRelaxation() {
-    links=new Link[0];
+  public BhKeepDistance() {
+    points=new Point[0];
   }
   
   // Constructor. Uses ArrayLists and generics.
-  public SolverRelaxation(ArrayList<Link> linksin) {
-    links=new Link[linksin.size()];
-    linksin.toArray(links);
+  public BhKeepDistance(ArrayList<? extends Point> pointsin) {
+    points=new Point[pointsin.size()];
+    pointsin.toArray(points);
   }
   
   // Constructor. Uses arrays.
-  public SolverRelaxation(Link[] linksin) {
-    links=linksin;
+  public BhKeepDistance(Point[] pointsin) {
+    points=pointsin;
   }
   
   // Various getter-setter functions.
   
-  public SolverRelaxation setL(ArrayList<Link> linksin) {
-    links=new Link[linksin.size()];
-  	linksin.toArray(links);
+  public BhKeepDistance setP(ArrayList<? extends Point> pointsin) {
+    points=new Point[pointsin.size()];
+  	pointsin.toArray(points);
   	return(this);
   }
   
-  public SolverRelaxation setL(Link[] lin) {
-  	links=lin;
+  public BhKeepDistance setP(Point[] pin) {
+  	points=pin;
   	return(this);
   }
   
-  public Link[] getL() {
-  	return(links);
+  public BhKeepDistance setC(float cin) {
+	C = cin;
+	return(this);
   }
   
-  public final SolverRelaxation setFast(boolean fin) {
+  public BhKeepDistance setS(float sin) {
+	S = sin;
+	return(this);
+  }
+  
+  public BhKeepDistance setR(float rin) {
+	R = rin;
+	R2 = R * R;
+	return(this);
+  }
+  
+  public Point[] getP() {
+  	return(points);
+  }
+  
+  public float getC() {
+	return(C);
+  }
+  
+  public float getS() {
+	return(S);
+  }
+  
+  public float getR() {
+	return(R);
+  }
+  
+  public final BhKeepDistance setFast(boolean fin) {
   	fast=fin;
   	return(this);
   }
   
   @Override
   protected final void stepFunction(int step, int offset) {
-    if (fast) {fStepLinks(links, step, offset);} else {stepLinks(links, step, offset);}
+    if (fast) {fStepDist(points, step, offset);} else {StepDist(points, step, offset);}
   }
   
-  //Dynamic relaxation solver for springs
-  //for details see:
-  //Jakobsen, Thomas - Advanced Character Physics
-  private final void stepLinks(Link[] links, int step, int offset) {
+  private final void fStepDist(Point[] points, int step, int offset) {
     float d;
-    float L2,C;
+    float L2;
     Point p1,p2;
     float dx,dy,dz,lx,ly,lz;
-    Link l;
-    for (int i=offset,j=links.length;i<j;i+=step) {
-      l=links[i];
-      p1=l.p1; p2=l.p2;
-      dx=p2.x-p1.x;
-      dy=p2.y-p1.y;
-      dz=p2.z-p1.z;
-      L2 = dx*dx+dy*dy+dz*dz;
-      C = l.C;
-      d = C + L2/C; 
-      d = (float)(d*.25 + L2/d);
-      d = (float)(l.S*(1-(C/d)));
-      lx=d*dx;
-      ly=d*dy;
-      lz=d*dz;
-      p1.sforce.x+=lx;
-      p1.sforce.y+=ly;
-      p1.sforce.z+=lz;
-      p2.sforce.x-=lx;
-      p2.sforce.y-=ly;
-      p2.sforce.z-=lz;
+    for (int i=offset,k=points.length;i<k;i+=step) {
+      p1=points[i];
+	  for (int j=i+step;j<k;j+=step) {
+		p2=points[j];
+		dx=p2.x-p1.x;
+		dy=p2.y-p1.y;
+		dz=p2.z-p1.z;
+		L2 = dx*dx+dy*dy+dz*dz;
+		if (L2<R2) {
+		  d = C + L2/C; 
+		  d = (float)(d*.25 + L2/d);
+		  d = (float)(S*(1-(C/d)));
+		  lx=d*dx;
+		  ly=d*dy;
+		  lz=d*dz;
+		  p1.sforce.x+=lx;
+		  p1.sforce.y+=ly;
+		  p1.sforce.z+=lz;
+		  p2.sforce.x-=lx;
+		  p2.sforce.y-=ly;
+		  p2.sforce.z-=lz;
+		}
+	  }
     }
   }
   
   // Faster variant with one Newton iteration.
-  private final void fStepLinks(Link[] links, int step, int offset) {
+  private final void StepDist(Point[] points, int step, int offset) {
     float d;
     float L2,C2;
     Point p1,p2;
     float dx,dy,dz,lx,ly,lz;
-    Link l;
-    for (int i=offset,j=links.length;i<j;i+=step) {
-      l=links[i];
-      p1=l.p1; p2=l.p2;
-      dx=p2.x-p1.x;
-      dy=p2.y-p1.y;
-      dz=p2.z-p1.z;
-      L2 = dx*dx+dy*dy+dz*dz;
-      C2 = l.C; 
-      C2*= C2;
-      d = (float)(l.S*(C2/(L2+C2)-.5f));
-      lx=d*dx;
-      ly=d*dy;
-      lz=d*dz;
-      p1.sforce.x-=lx;
-      p1.sforce.y-=ly;
-      p1.sforce.z-=lz;
-      p2.sforce.x+=lx;
-      p2.sforce.y+=ly;
-      p2.sforce.z+=lz;
-    }
+    for (int i=offset,k=points.length;i<k;i+=step) {
+      p1=points[i];
+	  for (int j=i+step;j<k;j+=step) {
+		p2=points[j];
+		dx=p2.x-p1.x;
+		dy=p2.y-p1.y;
+		dz=p2.z-p1.z;
+		L2 = dx*dx+dy*dy+dz*dz;
+		C2 = C*C; 
+		if (L2<R2) {
+		  d = (float)(S*(C2/(L2+C2)-.5f));
+		  lx=d*dx;
+		  ly=d*dy;
+		  lz=d*dz;
+		  p1.sforce.x-=lx;
+		  p1.sforce.y-=ly;
+		  p1.sforce.z-=lz;
+		  p2.sforce.x+=lx;
+		  p2.sforce.y+=ly;
+		  p2.sforce.z+=lz;
+		}
+	  }
+	}
   }
 }

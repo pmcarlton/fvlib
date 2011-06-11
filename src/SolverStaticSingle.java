@@ -21,7 +21,7 @@
 //  OF SUCH DAMAGE.
 
 
-package fvlib;
+package volatileprototypes.fvlib;
 
 import processing.core.*;
 import java.util.*;
@@ -30,8 +30,7 @@ import java.util.concurrent.*;
 public final class SolverStaticSingle extends Solver {
 
 private Point[] points;					// double array that holds points
-private float bias=.001f, range=200;     // Bias limits the maximum force (at zero distance).
-private float range2=range*range;		// Range specifies the maximum range below which force is applied.
+private float bias=.001f, fmult=1;      // Bias limits the maximum force (at zero distance).
 private boolean inv=false;				// Option for inverting attract/repel forces.
 
 // Constructor. Creates empty arrays.
@@ -40,7 +39,7 @@ private boolean inv=false;				// Option for inverting attract/repel forces.
   }
   
   // Constructor. Uses ArrayLists and generics.
-  public SolverStaticSingle(ArrayList<Point> pointsin) {
+  public SolverStaticSingle(ArrayList<? extends Point> pointsin) {
     points=new Point[pointsin.size()];
     pointsin.toArray(points);
   }
@@ -52,7 +51,7 @@ private boolean inv=false;				// Option for inverting attract/repel forces.
   
   // Various getter-setter functions.
   
-  public SolverStaticSingle setP(ArrayList<Point> pointsin) {
+  public SolverStaticSingle setP(ArrayList<? extends Point> pointsin) {
     points=new Point[pointsin.size()];
     pointsin.toArray(points);
   	return(this);
@@ -65,19 +64,17 @@ private boolean inv=false;				// Option for inverting attract/repel forces.
   
   public SolverStaticSingle setBias(float biasin) {
   	bias=biasin;
-  	range2=range*range+bias;
-  	return(this);
-  }
-  
-  public SolverStaticSingle setRange(float rangein) {
-  	range=rangein;
-  	range2=range*range+bias;
   	return(this);
   }
   
   public SolverStaticSingle setInv(boolean invin) {
     inv=invin;
     return(this);
+  }
+  
+  public SolverStaticSingle setFMult(float fmultin) {
+	fmult = fmultin;
+	return(this);
   }
   
   public Point[] getP() {
@@ -88,8 +85,8 @@ private boolean inv=false;				// Option for inverting attract/repel forces.
   	return(bias);
   }
   
-  public float getRange() {
-  	return(range);
+  public float getFMult() {
+	return(fmult);
   }
   
   @Override
@@ -114,9 +111,9 @@ private boolean inv=false;				// Option for inverting attract/repel forces.
         dx=p2.x-x1;
         dy=p2.y-y1;
         dz=p2.z-z1;
-        d2=dx*dx+dy*dy+dz*dz+bias;
+        d2=dx*dx+dy*dy+dz*dz;
         if (d2<r1||d2<p2.r2) {
-          d2=(c1*p2.c)/d2;
+          d2=fmult*(c1*p2.c)/(d2+bias);
           lx=dx*d2;
           ly=dy*d2;
           lz=dz*d2;
@@ -148,9 +145,9 @@ private boolean inv=false;				// Option for inverting attract/repel forces.
         dx=p2.x-x1;
         dy=p2.y-y1;
         dz=p2.z-z1;
-        d2=dx*dx+dy*dy+dz*dz+bias;
+        d2=dx*dx+dy*dy+dz*dz;
         if (d2<r1||d2<p2.r2) {
-          d2=(c1*p2.c)/d2;
+          d2=fmult*(c1*p2.c)/(d2+bias);
           lx=dx*d2;
           ly=dy*d2;
           lz=dz*d2;

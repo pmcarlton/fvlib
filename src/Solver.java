@@ -24,7 +24,7 @@
 // framework for parallel processing as well implements a few useful functions.
 // All solver classes are children of this one.
 
-package fvlib;
+package volatileprototypes.fvlib;
 
 import processing.core.*;
 import java.util.*;

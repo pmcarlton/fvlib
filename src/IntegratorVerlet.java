@@ -23,7 +23,7 @@
 // This library uses portions of code and examples from Thomas Jakobsen's
 // paper "Advanced Character Physics".
 
-package fvlib;
+package volatileprototypes.fvlib;
 
 import processing.core.*;
 import java.util.*;
@@ -40,7 +40,7 @@ private Point[] points;			// array that holds points
   }
   
   // Constructor. Uses ArrayLists and generics.
-  public IntegratorVerlet(ArrayList<Point> pointsin) {
+  public IntegratorVerlet(ArrayList<? extends Point> pointsin) {
     points=new Point[pointsin.size()];
     pointsin.toArray(points);
   }
@@ -61,7 +61,7 @@ private Point[] points;			// array that holds points
   	return(F);
   }
   
-  public IntegratorVerlet setP(ArrayList<Point> pointsin) {
+  public IntegratorVerlet setP(ArrayList<? extends Point> pointsin) {
     points=new Point[pointsin.size()];
     pointsin.toArray(points);
   	return(this);

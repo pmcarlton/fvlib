@@ -29,7 +29,7 @@
 // Initial implementation. Still slow and quite buggy. Also requires some thorough
 // commenting.
 
-package fvlib;
+package volatileprototypes.fvlib;
 
 import processing.core.*;
 import java.util.*;
@@ -39,7 +39,7 @@ public final class SolverCamOverlap extends Solver {
 
 private Point[] points;					// double array that holds points
 private PVector camPos;					// Camera Position
-private float bias=.001f, range=200;     // Bias limits the maximum force (at zero distance).
+private float range=200;     
 private float range2=range*range;		// Range specifies the maximum range below which force is applied.
 private float magnitude=.1f;			// Repelling force magnitude.
 
@@ -49,7 +49,7 @@ private float magnitude=.1f;			// Repelling force magnitude.
   }
   
   // Constructor. Uses ArrayLists and generics.
-  public SolverCamOverlap(ArrayList<Point> pointsin, PVector camPosIn) {
+  public SolverCamOverlap(ArrayList<? extends Point> pointsin, PVector camPosIn) {
     points=new Point[pointsin.size()];
     pointsin.toArray(points);
 	camPos = camPosIn;
@@ -63,7 +63,7 @@ private float magnitude=.1f;			// Repelling force magnitude.
   
   // Various getter-setter functions.
   
-  public SolverCamOverlap setP(ArrayList<Point> pointsin) {
+  public SolverCamOverlap setP(ArrayList<? extends Point> pointsin) {
     points=new Point[pointsin.size()];
     pointsin.toArray(points);
   	return(this);
@@ -71,18 +71,6 @@ private float magnitude=.1f;			// Repelling force magnitude.
   
   public SolverCamOverlap setP(Point[] pointsin) {
   	points=pointsin;
-  	return(this);
-  }
-  
-  public SolverCamOverlap setBias(float biasin) {
-  	bias=biasin;
-  	range2=range*range+bias;
-  	return(this);
-  }
-  
-  public SolverCamOverlap setRange(float rangein) {
-  	range=rangein;
-  	range2=range*range+bias;
   	return(this);
   }
   
@@ -98,10 +86,6 @@ private float magnitude=.1f;			// Repelling force magnitude.
   
   public Point[] getP() {
   	return(points);
-  }
-  
-  public float getBias() {
-  	return(bias);
   }
   
   public float getRange() {
@@ -153,7 +137,7 @@ private float magnitude=.1f;			// Repelling force magnitude.
 		// higher than a threshhold; that is to say, if the points are far
 		// enough from the camera or really close by.
 		// We don't want points that lie around the camera to be affected
-		// by this procedure. Should be improved in the future to really
+		// by this procedure. Should be improved to really
 		// include all points around the camera.
 		if (cP1x * cP2x + cP1y * cP2y + cP1z * cP2z > 20) {
 		  dx = p2.x - x1;

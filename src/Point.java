@@ -23,7 +23,7 @@
 // This library uses portions of code and examples from Thomas Jakobsen's
 // paper "Advanced Character Physics".
 
-package fvlib;
+package volatileprototypes.fvlib;
 
 import processing.core.*;
 
