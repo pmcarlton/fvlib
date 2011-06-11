@@ -29,7 +29,7 @@ import processing.core.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-public final class BhKeepDistance extends Solver {
+public final class ConstantDistance extends Solver {
 
 private Point[] points;			// array that holds points
 private boolean fast=false;		// Option for fast/accurate spring solver.
@@ -38,45 +38,45 @@ private float S = 0.25f;
 private float R = 1.00f, R2 = R*R;
 
 // Constructor. Creates empty arrays.
-  public BhKeepDistance() {
+  public ConstantDistance() {
     points=new Point[0];
   }
   
   // Constructor. Uses ArrayLists and generics.
-  public BhKeepDistance(ArrayList<? extends Point> pointsin) {
+  public ConstantDistance(ArrayList<? extends Point> pointsin) {
     points=new Point[pointsin.size()];
     pointsin.toArray(points);
   }
   
   // Constructor. Uses arrays.
-  public BhKeepDistance(Point[] pointsin) {
+  public ConstantDistance(Point[] pointsin) {
     points=pointsin;
   }
   
   // Various getter-setter functions.
   
-  public BhKeepDistance setP(ArrayList<? extends Point> pointsin) {
+  public ConstantDistance setP(ArrayList<? extends Point> pointsin) {
     points=new Point[pointsin.size()];
   	pointsin.toArray(points);
   	return(this);
   }
   
-  public BhKeepDistance setP(Point[] pin) {
+  public ConstantDistance setP(Point[] pin) {
   	points=pin;
   	return(this);
   }
   
-  public BhKeepDistance setC(float cin) {
+  public ConstantDistance setC(float cin) {
 	C = cin;
 	return(this);
   }
   
-  public BhKeepDistance setS(float sin) {
+  public ConstantDistance setS(float sin) {
 	S = sin;
 	return(this);
   }
   
-  public BhKeepDistance setR(float rin) {
+  public ConstantDistance setR(float rin) {
 	R = rin;
 	R2 = R * R;
 	return(this);
@@ -98,7 +98,7 @@ private float R = 1.00f, R2 = R*R;
 	return(R);
   }
   
-  public final BhKeepDistance setFast(boolean fin) {
+  public final ConstantDistance setFast(boolean fin) {
   	fast=fin;
   	return(this);
   }
