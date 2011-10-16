@@ -28,53 +28,83 @@ package volatileprototypes.fvlib;
 import java.lang.Math.*;
 import processing.core.*;
 
+/**
+ * @author      Yiannis Chatzikonstantinou <contact@volatileprototypes.com>
+ * @version     0.5.9                                    
+ * @since       0.2          
+ */
 public class Link {
 
   public Point p1,p2;
   public float L,C,S; 	// Current Length, Original Length, Stiffness
-  				// Plz Notice! L does not get updated automatically.
-  				// One must call updateL() to get the correct
+  				// Plz Note! L does not update automatically to allow
+				// more control over processor resources.
+  				// One must call getL(true) to get the current
   				// L-value.
 
-  // Constructor.
+/**
+ * Constructor.
+ *
+ * Constructor, generates a new class instance using point references and stiffness.
+ *
+ * @param p1in A Point object indicating the 1st point.
+ * @param p2in A Point object indicating the 2nd point.
+ * @param st A float value indicating stiffness.
+ *
+ */
   public Link(Point p1in, Point p2in,float st) {
     p1=p1in;
     p2=p2in;
-    updateC();
+	C = getL(true);
     S=st;
   }
   
-  // Update the original length(C) to reflect the current
-  // distance between points. Also copy to current length (L)
-  // and return.
-  public final Link updateC() {
-  	float dx=p2.x-p1.x;
-  	float dy=p2.y-p1.y;
-  	float dz=p2.z-p1.z;
-  	C=(float)Math.sqrt(dx*dx+dy*dy+dz*dz);
-  	return(this);
-  }
-  
-  // Set the original length to the specified value.
+/**
+ * Set the rest length to the specified value.
+ *
+ * @param cin The new rest length value.
+ * 
+ * @return The current object.
+ *
+ */
   public final Link setC(float cin) {
   	C=cin;
   	return(this);
   }
   
-  // Get original length.
+/**
+ * Get the rest length.
+ * 
+ * @return The rest length.
+ *
+ */
   public final float getC() {
   	return(C);
   }
   
-  // Get current length.
+/**
+ * Get the current (cached) length value.
+ * 
+ * @return The current (cached) length value.
+ *
+ */
   public final float getL() {
   	return(L);
   }
   
-  // Update the current length to the correct value. This
-  // must be called explicitly before getting the length
-  // because it is not updated automatically during the
-  // dynamic relaxation step.
+/**
+ * Get the current (cached) length value.
+ *
+ * @param update Whether to update the cached length value.
+ * @return The current (cached) length value.
+ *
+ */
+  public final float getL(boolean update) {
+  	if (update) updateLength();
+	return(L);
+  }
+
+  @Deprecated
   public final Link updateL() {
     float dx=p2.x-p1.x;
   	float dy=p2.y-p1.y;
@@ -83,24 +113,57 @@ public class Link {
   	return(this);
   }
   
-  // Get/set points.
+  // Update the current length to the correct value.
+  private final void updateLength() {
+	float dx=p2.x-p1.x;
+  	float dy=p2.y-p1.y;
+  	float dz=p2.z-p1.z;
+  	L=(float)Math.sqrt(dx*dx+dy*dy+dz*dz);
+  }
+  
+/**
+ * Sets the 1st point.
+ *
+ * @param p1in The 1st point.
+ */
   public final Link setP1(Point p1in) {
   	p1=p1in;
   	return(this);
   }
-  
+
+/**
+ * Sets the 2nd point.
+ *
+ * @param p2in The 2nd point.
+ */
   public final Link setP2(Point p2in) {
   	p2=p2in;
   	return(this);
   }
-  
+
+/**
+ *  Get the bias value.
+ *
+ * @return The current bias value.
+ */
   public final Point getP1() {
   	return(p1);
   }
-  
+
+/**
+ *  Get the bias value.
+ *
+ * @return The current bias value.
+ */
   public final Point getP2() {
   	return(p2);
   }
+  
+/**
+ *  Get a PVector of the current coordinates.
+ *
+ * @return The PVector of the current coordinates.
+ */
   public final PVector get() {
   	PVector r=p2.get();
   	r.sub(p1);

@@ -29,76 +29,126 @@ import processing.core.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-public final class ConstantDistance extends Solver {
+/**
+ * @author      Yiannis Chatzikonstantinou <contact@volatileprototypes.com>
+ * @version     0.5.9                                    
+ * @since       0.4          
+ */
+public final class BehaviorConstantDistance extends Behavior {
 
-private Point[] points;			// array that holds points
 private boolean fast=false;		// Option for fast/accurate spring solver.
 private float C = 1.00f;
 private float S = 0.25f;
 private float R = 1.00f, R2 = R*R;
+  
+/**
+ * Constructor, generates a new class instance.
+ *
+ */
+  public BehaviorConstantDistance() {
+    super();
+  }
+  
+/**
+ * Constructor, generates a new class instance using a copy of the supplied Point ArrayList.
+ *
+ * @param pointsin An ArrayList containing Point objects with which the object's list will be initialized.
+ *
+ */
+  public BehaviorConstantDistance(ArrayList<? extends Point> pointsin) {
+    super(pointsin);
+  }
+  
+/**
+ * Constructor, generates a new class instance using the supplied Point array.
+ *
+ * @param pointsin An array containing Point objects with which the object's array will be initialized.
+ *
+ */
+  public BehaviorConstantDistance(Point[] pointsin) {
+    super(pointsin);
+  }
 
-// Constructor. Creates empty arrays.
-  public ConstantDistance() {
-    points=new Point[0];
-  }
-  
-  // Constructor. Uses ArrayLists and generics.
-  public ConstantDistance(ArrayList<? extends Point> pointsin) {
-    points=new Point[pointsin.size()];
-    pointsin.toArray(points);
-  }
-  
-  // Constructor. Uses arrays.
-  public ConstantDistance(Point[] pointsin) {
-    points=pointsin;
-  }
-  
-  // Various getter-setter functions.
-  
-  public ConstantDistance setP(ArrayList<? extends Point> pointsin) {
-    points=new Point[pointsin.size()];
-  	pointsin.toArray(points);
-  	return(this);
-  }
-  
-  public ConstantDistance setP(Point[] pin) {
-  	points=pin;
-  	return(this);
-  }
-  
-  public ConstantDistance setC(float cin) {
+/**
+ * Sets the rest length, the length at which points exert no force between each other.
+ *
+ * @param cin A float representing the new rest distance value.
+ *
+ * @return The current object.
+ */
+  public BehaviorConstantDistance setC(float cin) {
 	C = cin;
 	return(this);
   }
-  
-  public ConstantDistance setS(float sin) {
+
+/**
+ * Sets the stiffness of the virtual spring used to keep object distance.
+ *
+ * The stiffness of the virtual springs used to keep the object distance in this
+ * behavior is an float value between 0.0 and 0.5, with 0.5 being the stiffest.
+ * Be aware that high values may easily cause instability of the physics system.
+ *
+ * @param sin A float representing the new stiffness value.
+ *
+ * @return The current object.
+ */
+  public BehaviorConstantDistance setS(float sin) {
 	S = sin;
 	return(this);
   }
   
-  public ConstantDistance setR(float rin) {
+/**
+ * Sets the maximum range below which objects will interact.
+ *
+ * @param rin A float representing the new range.
+ *
+ * @return The current object.
+ */
+  public BehaviorConstantDistance setRange(float rin) {
 	R = rin;
 	R2 = R * R;
 	return(this);
   }
-  
-  public Point[] getP() {
-  	return(points);
-  }
-  
+
+/**
+ * Returns the rest length of the virtual springs.
+ *
+ * @return The rest length value.
+ */
   public float getC() {
 	return(C);
   }
-  
+
+/**
+ * Returns the stiffness of the virtual springs.
+ *
+ * @return The stiffness value.
+ */
   public float getS() {
 	return(S);
   }
-  
-  public float getR() {
+
+/**
+ * Returns the range value.
+ *
+ * @return The range value.
+ */
+  public float getRange() {
 	return(R);
   }
-  
-  public final ConstantDistance setFast(boolean fin) {
+
+/**
+ * Sets whether to use a faster solver or the normal one.
+ *
+ * In fvlib, a fast solver is implemented for spring interactions that uses just one Newton iteration to approximate
+ * the square root of the squared length between points using the rest length as reference. The faster solver reduces precision but increases
+ * simulation speed noticeably.
+ *
+ * @param fin A boolean representing whether to use fast sqrt.
+ *
+ * @return The current object.
+ */
+  public final BehaviorConstantDistance setFast(boolean fin) {
   	fast=fin;
   	return(this);
   }

@@ -35,67 +35,119 @@ import processing.core.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-public final class SolverCamOverlap extends Solver {
+/**
+ * @author      Yiannis Chatzikonstantinou <contact@volatileprototypes.com>
+ * @version     0.5.9                                    
+ * @since       0.5          
+ */
 
-private Point[] points;					// double array that holds points
+public final class BehaviorCameraOverlap extends Behavior {
+
 private PVector camPos;					// Camera Position
 private float range=200;     
 private float range2=range*range;		// Range specifies the maximum range below which force is applied.
 private float magnitude=.1f;			// Repelling force magnitude.
 
-// Constructor. Creates empty arrays.
-  public SolverCamOverlap() {
-    points=new Point[0];
+/**
+ * Constructor, generates a new class instance.
+ *
+ */
+  public BehaviorCameraOverlap() {
+    super();
   }
   
-  // Constructor. Uses ArrayLists and generics.
-  public SolverCamOverlap(ArrayList<? extends Point> pointsin, PVector camPosIn) {
-    points=new Point[pointsin.size()];
-    pointsin.toArray(points);
+/**
+ * Constructor.
+ *
+ * Constructor, generates a new class instance using a copy of the supplied Point ArrayList and a Vector
+ * indicating camera position against which points will be separated.
+ *
+ * @param pointsin An ArrayList containing Point objects with which the object will be initialized.
+ *
+ * @param camPosIn A PVector object indicating the camera position.
+ *
+ */
+  public BehaviorCameraOverlap(ArrayList<? extends Point> pointsin, PVector camPosIn) {
+    super(pointsin);
 	camPos = camPosIn;
   }
   
-  // Constructor. Uses arrays.
-  public SolverCamOverlap(Point[] pointsin, PVector camPosIn) {
-    points=pointsin;
+/**
+ * Constructor.
+ *
+ * Constructor, generates a new class instance using the supplied Point array and a Vector
+ * indicating camera position against which points will be separated.
+ *
+ * @param pointsin An array containing Point objects with which the object will be initialized.
+ *
+ * @param camPosIn A PVector object indicating the camera position.
+ *
+ */
+  public BehaviorCameraOverlap(Point[] pointsin, PVector camPosIn) {
+    super(pointsin);
 	camPos = camPosIn;
   }
   
-  // Various getter-setter functions.
-  
-  public SolverCamOverlap setP(ArrayList<? extends Point> pointsin) {
-    points=new Point[pointsin.size()];
-    pointsin.toArray(points);
-  	return(this);
-  }
-  
-  public SolverCamOverlap setP(Point[] pointsin) {
-  	points=pointsin;
-  	return(this);
-  }
-  
-  public SolverCamOverlap setCam(PVector camPosIn) {
+/**
+ * Sets the object's Camera Vector using the supplied PVector object.
+ *
+ * @param camPosIn The new camera position as a PVector.
+ *
+ * @return The current object.
+ */
+  public BehaviorCameraOverlap setCam(PVector camPosIn) {
 	camPos=camPosIn;
 	return(this);
   }
   
-  public SolverCamOverlap setMagnitude(float magin) {
+/**
+ * Sets the magnitude of the separation force applied to each point.
+ *
+ * @param magin A float representing magnitude.
+ *
+ * @return The current object.
+ */
+  public BehaviorCameraOverlap setMagnitude(float magin) {
   	magnitude=magin;
   	return(this);
   }
-  
-  public Point[] getP() {
-  	return(points);
+
+/**
+ * Sets the distance that points need to be separated.
+ *
+ * @param nRange A float representing distance.
+ *
+ * @return The current object.
+ */
+  public BehaviorCameraOverlap setRange(float nRange) {
+	range = nRange;
+	range2 = range*range;
+	return(this);
   }
-  
+
+/**
+ * Returns the range value.
+ *
+ * @return The range value.
+ */
   public float getRange() {
   	return(range);
   }
-  
+
+/**
+ * Returns the camera position as a PVector.
+ *
+ * @return A PVector object representing camera position.
+ */
   public PVector getCam() {
   	return(camPos);
   }
-  
+
+/**
+ * Returns the force magnitude value.
+ *
+ * @return A float representing the magnitude value.
+ */
   public float getMagnitude() {
   	return(magnitude);
   }

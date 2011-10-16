@@ -20,9 +20,6 @@
 //  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY 
 //  OF SUCH DAMAGE.
 
-// This library uses portions of code and examples from Thomas Jakobsen's
-// paper "Advanced Character Physics".
-
 package volatileprototypes.fvlib;
 
 import processing.core.*;
@@ -32,18 +29,18 @@ import java.util.concurrent.*;
 /**
  * @author      Yiannis Chatzikonstantinou <contact@volatileprototypes.com>
  * @version     0.5.9                                    
- * @since       0.2.0          
+ * @since       0.5.9          
  */
-public final class IntegratorVerlet extends Behavior {
+public class Behavior extends Solver {
 
-private float F=.99f;			// Friction Constant.
-  
+  protected Point[] points;					// double array that holds points
+
 /**
- * Constructor, generates a new class instance.
+ * Constructor, generates a new class instance with empty point array.
  *
  */
-  public IntegratorVerlet() {
-    super();
+  public Behavior() {
+    points=new Point[0];
   }
   
 /**
@@ -52,8 +49,9 @@ private float F=.99f;			// Friction Constant.
  * @param pointsin An ArrayList containing Point objects with which the object's list will be initialized.
  *
  */
-  public IntegratorVerlet(ArrayList<? extends Point> pointsin) {
-    super(pointsin);
+  public Behavior(ArrayList<? extends Point> pointsin) {
+    points=new Point[pointsin.size()];
+    pointsin.toArray(points);
   }
   
 /**
@@ -64,67 +62,35 @@ private float F=.99f;			// Friction Constant.
  * @param pointsin An array containing Point objects with which the object's list will be initialized.
  *
  */
-  public IntegratorVerlet(Point[] pointsin) {
-    super(pointsin);
+  public Behavior(Point[] pointsin) {
+    points=pointsin;
   }
   
 /**
- * Sets the friction value. 0 = max friction, 1 = no friction.
+ * Sets the object's Point array using a copy of the supplied ArrayList.
  *
- * @param fin The friction value.
+ * @param pointsin The ArrayList containing Point objects.
  */
-  public final IntegratorVerlet setF(float fin) {
-  	F=fin;
-  	return(this);
+  public void setP(ArrayList<? extends Point> pointsin) {
+    points=new Point[pointsin.size()];
+    pointsin.toArray(points);
   }
 
 /**
- * Returns the friction value. 0 = max friction, 1 = no friction.
+ * Sets the object's Point array using the supplied array.
  *
- * @return The friction value.
+ * @param pointsin The array containing Point objects.
  */
-  public final float getF() {
-  	return(F);
+  public void setP(Point[] pointsin) {
+  	points=pointsin;
   }
   
- // Verlet Integration function for stepping points.
-  // Each loop:
-  // 1.Current position gets copied to temp position.
-  // 2.New position is defined by adding the difference
-  //   from the previous and adding forces.
-  // 3.Temp position is copied to the old position.
-  // 4.Forces are reset.
-  // If the point is flagged as unyielding, the current
-  // position is set to the old one.
-  
-  @Override
-  protected final void stepFunction(int step, int offset) {
-    float tx,ty,tz;
-    Point p;
-    PVector o,f,u;
-	for (int i=offset,j=points.length;i<j;i+=step) {
-		p=points[i];
-		o=p.old;
-		f=p.sforce;
-		tx=p.x;
-		ty=p.y;
-		tz=p.z;
-		if (!p.U) {
-			p.x+=(tx-o.x)*F+f.x;
-			p.y+=(ty-o.y)*F+f.y;
-			p.z+=(tz-o.z)*F+f.z;
-			
-		} 
-		else {
-			u=p.uMult;
-			p.x+=((tx-o.x)*F+f.x)*u.x;
-			p.y+=((ty-o.y)*F+f.y)*u.y;
-			p.z+=((tz-o.z)*F+f.z)*u.z;
-		}
-		o.x=tx;
-		o.y=ty;
-		o.z=tz;
-		f.x=f.y=f.z=0;
-	}
+/**
+ *  Get the current point array.
+ *
+ * @return The current point array.
+ */
+  public Point[] getP() {
+  	return(points);
   }
 }

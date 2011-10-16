@@ -27,64 +27,96 @@ import processing.core.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-public final class SolverStaticSingle extends Solver {
+/**
+ * @author      Yiannis Chatzikonstantinou <contact@volatileprototypes.com>
+ * @version     0.5.9                                    
+ * @since       0.4          
+ */
+public final class BehaviorCharge extends Behavior {
 
-private Point[] points;					// double array that holds points
 private float bias=.001f, fmult=1;      // Bias limits the maximum force (at zero distance).
 private boolean inv=false;				// Option for inverting attract/repel forces.
 
-// Constructor. Creates empty arrays.
-  public SolverStaticSingle() {
-    points=new Point[0];
+/**
+ * Constructor, generates a new class instance.
+ *
+ */
+  public BehaviorCharge() {
+    super();
   }
   
-  // Constructor. Uses ArrayLists and generics.
-  public SolverStaticSingle(ArrayList<? extends Point> pointsin) {
-    points=new Point[pointsin.size()];
-    pointsin.toArray(points);
+/**
+ * Constructor, generates a new class instance using a copy of the supplied Point ArrayList.
+ *
+ * @param pointsin An ArrayList containing Point objects with which the object's list will be initialized.
+ *
+ */
+  public BehaviorCharge(ArrayList<? extends Point> pointsin) {
+    super(pointsin);
   }
   
-  // Constructor. Uses arrays.
-  public SolverStaticSingle(Point[] pointsin) {
-    points=pointsin;
+/**
+ * Constructor.
+ *
+ * Constructor, generates a new class instance using the supplied array.
+ *
+ * @param pointsin An array containing Point objects with which the object's list will be initialized.
+ *
+ */
+  public BehaviorCharge(Point[] pointsin) {
+    super(pointsin);
   }
-  
-  // Various getter-setter functions.
-  
-  public SolverStaticSingle setP(ArrayList<? extends Point> pointsin) {
-    points=new Point[pointsin.size()];
-    pointsin.toArray(points);
-  	return(this);
-  }
-  
-  public SolverStaticSingle setP(Point[] pointsin) {
-  	points=pointsin;
-  	return(this);
-  }
-  
-  public SolverStaticSingle setBias(float biasin) {
+
+/**
+ * Sets the bias. Bias limits the maximum force (at zero distance).
+ *
+ * @param biasin A float representing the new bias value.
+ *
+ * @return The current object.
+ */
+  public BehaviorCharge setBias(float biasin) {
   	bias=biasin;
   	return(this);
   }
-  
-  public SolverStaticSingle setInv(boolean invin) {
+
+/**
+ * Sets whether force should be inverted. By default same charges repel.
+ *
+ * @param invin A bool representing the new invert value.
+ *
+ * @return The current object.
+ */
+  public BehaviorCharge setInv(boolean invin) {
     inv=invin;
     return(this);
   }
-  
-  public SolverStaticSingle setFMult(float fmultin) {
+
+/**
+ * Sets the force multiplier.
+ *
+ * @param fmultin A float representing the new force multiplier.
+ *
+ * @return The current object.
+ */
+  public BehaviorCharge setFMult(float fmultin) {
 	fmult = fmultin;
 	return(this);
   }
-  
-  public Point[] getP() {
-  	return(points);
-  }
-  
+
+/**
+ * Get the bias value.
+ *
+ * @return The current bias value.
+ */
   public float getBias() {
   	return(bias);
   }
-  
+
+/**
+ * Get the current force multiplier value.
+ *
+ * @return The current force multiplier value.
+ */
   public float getFMult() {
 	return(fmult);
   }

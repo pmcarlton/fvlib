@@ -7,4 +7,5 @@ if
 then
     jar -cvf ../library/fvlib.jar volatileprototypes/fvlib/
     rm -rf volatileprototypes/
+    sh ./generatedoc.command
 fi

@@ -26,52 +26,63 @@ import processing.core.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-public final class ConstantForce extends Solver {
+/**
+ * @author      Yiannis Chatzikonstantinou <contact@volatileprototypes.com>
+ * @version     0.5.9                                    
+ * @since       0.4          
+ */
+public final class BehaviorConstantForce extends Behavior {
 
-private Point[] points;			// array that holds points
 private PVector f;
 
-// Constructor. Creates empty arrays.
-  public ConstantForce() {
-    points=new Point[0];
-    f=new PVector(0,0,0);
+/**
+ * Constructor, generates a new class instance.
+ *
+ */
+  public BehaviorConstantForce() {
+    super();
   }
   
-  // Constructor. Uses ArrayLists and generics.
-  public ConstantForce(ArrayList<? extends Point> pointsin, PVector fin) {
-    points=new Point[pointsin.size()];
-    pointsin.toArray(points);
+/**
+ * Constructor, generates a new class instance using a copy of the supplied Point ArrayList.
+ *
+ * @param pointsin An ArrayList containing Point objects with which the object's list will be initialized.
+ * @param fin A PVector object representing the force to be applied to the Point objects.
+
+ *
+ */
+  public BehaviorConstantForce(ArrayList<? extends Point> pointsin, PVector fin) {
+    super(pointsin);
     f=fin;
   }
   
-  // Constructor. Uses arrays.
-  public ConstantForce(Point[] pointsin, PVector fin) {
-    points=pointsin;
+/**
+ * Constructor, generates a new class instance using the supplied Point array.
+ *
+ * @param pointsin An array containing Point objects with which the object's array will be initialized.
+ * @param fin A PVector object representing the force to be applied to the Point objects.
+ *
+ */
+  public BehaviorConstantForce(Point[] pointsin, PVector fin) {
+    super(pointsin);
     f=fin;
   }
-  
-  // Various getter-setter functions.
-  
-  public ConstantForce setP(ArrayList<? extends Point> pointsin) {
-    points=new Point[pointsin.size()];
-  	pointsin.toArray(points);
-  	return(this);
-  }
-  
-  public ConstantForce setP(Point[] pin) {
-  	points=pin;
-  	return(this);
-  }
-  
-  public Point[] getP() {
-  	return(points);
-  }
-  
-  public ConstantForce setF(PVector fin) {
+
+/**
+ * Sets the force vector.
+ *
+ * @param fin The force vector.
+ */
+  public BehaviorConstantForce setF(PVector fin) {
   	f=fin;
   	return(this);
   }
-  
+
+/**
+ * Returns the current force vector.
+ *
+ * @return The range value.
+ */
   public PVector getF() {
   	return(f);
   }

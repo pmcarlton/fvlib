@@ -29,45 +29,86 @@ import processing.core.*;
 import java.util.*;
 import java.util.concurrent.*;
 
-public final class SolverRelaxation extends Solver {
+public final class BehaviorSpringRelaxation extends Solver {
 
 private Link[] links;			// array that holds points
 private boolean fast=false;		// Option for fast/accurate spring solver.
 
-// Constructor. Creates empty arrays.
-  public SolverRelaxation() {
+/**
+ * Constructor, generates a new class instance.
+ *
+ */
+  public BehaviorSpringRelaxation() {
     links=new Link[0];
   }
   
-  // Constructor. Uses ArrayLists and generics.
-  public SolverRelaxation(ArrayList<Link> linksin) {
+/**
+ * Constructor, generates a new class instance using a copy of the supplied Link ArrayList.
+ *
+ * @param linksin An ArrayList containing Link objects with which the object's list will be initialized.
+ *
+ */
+  public BehaviorSpringRelaxation(ArrayList<Link> linksin) {
     links=new Link[linksin.size()];
     linksin.toArray(links);
   }
   
-  // Constructor. Uses arrays.
-  public SolverRelaxation(Link[] linksin) {
+/**
+ * Constructor, generates a new class instance using the supplied Link array.
+ *
+ * @param linksin An array containing Link objects with which the object's array will be initialized.
+ *
+ */
+  public BehaviorSpringRelaxation(Link[] linksin) {
     links=linksin;
   }
   
-  // Various getter-setter functions.
-  
-  public SolverRelaxation setL(ArrayList<Link> linksin) {
+/**
+ * Sets the object's Link array using a copy of the supplied ArrayList.
+ *
+ * @param linksin The ArrayList containing Link objects.
+ *
+ * @return The current object.
+ */
+  public BehaviorSpringRelaxation setL(ArrayList<Link> linksin) {
     links=new Link[linksin.size()];
   	linksin.toArray(links);
   	return(this);
   }
-  
-  public SolverRelaxation setL(Link[] lin) {
-  	links=lin;
+
+/**
+ * Sets the object's Link array using the supplied array.
+ *
+ * @param linksin The array containing Link objects.
+ *
+ * @return The current object.
+ */
+  public BehaviorSpringRelaxation setL(Link[] linksin) {
+  	links=linksin;
   	return(this);
   }
-  
+
+/**
+ *  Get the current Link array.
+ *
+ * @return The current Link array.
+ */
   public Link[] getL() {
   	return(links);
   }
   
-  public final SolverRelaxation setFast(boolean fin) {
+/**
+ * Sets whether to use a faster solver or the normal one.
+ *
+ * In fvlib, a fast solver is implemented for spring interactions that uses just one Newton iteration to approximate
+ * the square root of the squared length between points using the rest length as reference. The faster solver reduces precision but increases
+ * simulation speed noticeably.
+ *
+ * @param fin A boolean representing whether to use fast sqrt.
+ *
+ * @return The current object.
+ */
+  public final BehaviorSpringRelaxation setFast(boolean fin) {
   	fast=fin;
   	return(this);
   }

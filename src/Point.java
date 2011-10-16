@@ -38,7 +38,16 @@ public class Point extends PVector {
   protected PVector uMult=new PVector(0,0,0);	// Multiplier for Unyielding constraints.
   protected boolean U=false;					// Unyielding flag.
   
-  // Constructor using coordinates.
+/**
+ * Constructor.
+ *
+ * Constructor, generates a new class instance using coordinates.
+ *
+ * @param xin X-Position of the Point.
+ * @param yin Y-Position of the Point.
+ * @param zin Z-Position of the Point.
+ *
+ */
   public Point(float xin, float yin, float zin) {
     super(xin,yin,zin);
     old=this.get();
@@ -46,7 +55,18 @@ public class Point extends PVector {
     w=w1=1f;
   }
   
-  // Constructor using coordinates with weight.
+/**
+ * Constructor.
+ *
+ * Constructor, generates a new class instance using coordinates and weight.
+ * Weight is not yet implemented for use during the simulation.
+ *
+ * @param xin X-Position of the Point.
+ * @param yin Y-Position of the Point.
+ * @param zin Z-Position of the Point.
+ * @param win Weight of the Point.
+ *
+ */
   public Point(float xin, float yin, float zin, float win) {
     super(xin,yin,zin);
     old=this.get();
@@ -55,7 +75,22 @@ public class Point extends PVector {
     w1=1f/win;
   }
   
-  // Constructor using coordinates with charge, weight and range.
+/**
+ * Constructor.
+ *
+ * Constructor, generates a new class instance using coordinates, weight, charge and range.
+ * Weight is not yet implemented for use during the simulation.
+ * Charge is used in electric Charge simulations (BehaviorCharge / BehaviorChargePair).
+ * Range is used to check for point-to-point interactions.
+ *
+ * @param xin X-Position of the Point.
+ * @param yin Y-Position of the Point.
+ * @param zin Z-Position of the Point.
+ * @param win Weight of the Point.
+ * @param cin Charge of the Point.
+ * @param rin Range of the Point.
+ *
+ */
   public Point(float xin, float yin, float zin, float win, float cin, float rin) {
     super(xin,yin,zin);
     old=this.get();
@@ -67,7 +102,14 @@ public class Point extends PVector {
     r2=r*r;
   }
   
-  // Constructor using PVector.
+/**
+ * Constructor.
+ *
+ * Constructor, generates a new class instance using a PVector.
+ *
+ * @param v The PVector with the coordinates of the Point.
+ *
+ */
   public Point(PVector v) {
     super(v.x,v.y,v.z);
     old=this.get();
@@ -75,7 +117,16 @@ public class Point extends PVector {
     w=w1=1f;
   }
   
-  // Constructor using PVector with weight.
+/**
+ * Constructor.
+ *
+ * Constructor, generates a new class instance a PVector and weight.
+ * Weight is not yet implemented for use during the simulation.
+ *
+ * @param v The PVector with the coordinates of the Point.
+ * @param win Weight of the Point.
+ *
+ */
   public Point(PVector v, float win) {
     super(v.x,v.y,v.z);
     old=this.get();
@@ -84,7 +135,20 @@ public class Point extends PVector {
     w1=1f/win;
   }
   
-  // Constructor using PVector with charge and range.
+/**
+ * Constructor.
+ *
+ * Constructor, generates a new class instance using a PVector, weight, charge and range.
+ * Weight is not yet implemented for use during the simulation.
+ * Charge is used in electric Charge simulations (BehaviorCharge / BehaviorChargePair).
+ * Range is used to check for point-to-point interactions.
+ *
+ * @param v The PVector with the coordinates of the Point.
+ * @param win Weight of the Point.
+ * @param cin Charge of the Point.
+ * @param rin Range of the Point.
+ *
+ */
   public Point(PVector v, float win, float cin, float rin) {
     super(v.x,v.y,v.z);
     old=this.get();
@@ -96,21 +160,48 @@ public class Point extends PVector {
     r2=r*r;
   }
   
-  // Copy this to a new one and return.
+/**
+ * Get a copy of this Point. Velocity, charge and force information is not copied.
+ *
+ * @return The copy.
+ *
+ */
   public Point copy() {
-    Point p=new Point(x,y,z,w);
+    Point p = copy(false);
+	return(p);
+  }
+
+/**
+ * Get a copy of this Point.
+ *
+ * @param copyVelocityAndForce Whether to copy velocity, charge and force also.
+ * 
+ * @return The copy.
+ *
+ */
+  public Point copy(boolean copyVelocityAndForce) {
+	Point p;
+	if (copyVelocityAndForce) {
+	  p = new Point(x,y,z,w,c,r);
+	} else {
+	  p = new Point(x,y,z,w);
+	}
     p.U=U;
     return(p);
   }
   
-  // Set the weight(W) and 1/weight (W1).
-  // If =0 needs some more attention.
+/**
+ * Set the weight.
+ *
+ * @param win The weight value.
+ *
+ */
   public Point setW(float win) {
   	w=win;
   	if (win!=0) {
   		w1=1/win;
   	} else {
-  		w1=100000;
+  		w1=Float.MAX_VALUE;
   	}
   	return(this);
   }
@@ -120,7 +211,12 @@ public class Point extends PVector {
   	return(w);
   }
   
-  // Set the charge.
+/**
+ * Set the charge.
+ *
+ * @param cin The charge value.
+ *
+ */
   public Point setC(float cin) {
   	c=cin;
   	return(this);
@@ -131,7 +227,12 @@ public class Point extends PVector {
   	return(c);
   }
   
-  // Set the range.
+/**
+ * Set the range.
+ *
+ * @param rin The range value.
+ *
+ */
   public Point setR(float rin) {
   	r=rin;
   	r2=r*r;
@@ -143,7 +244,12 @@ public class Point extends PVector {
   	return(r);
   }
   
-  // Set unyielging flag.
+/**
+ * Set whether the object is unyielding.
+ *
+ * @param uin The unyielding flag.
+ *
+ */
   public void setU(boolean uin) {
   	U=uin;
   }
@@ -153,7 +259,15 @@ public class Point extends PVector {
   	return(U);
   }
   
-  // Set unyielging multiplier.
+/**
+ * Set the unyielding multiplier.
+ *
+ * The unyielding multiplier indicated whether the object should drift around it's position when
+ * unyielding (pinned)
+ *
+ * @param umin The weight value.
+ *
+ */
   public Point setUMult(PVector umin) {
   	uMult=umin;
   	return(this);
@@ -163,13 +277,20 @@ public class Point extends PVector {
   public PVector getUMult() {
   	return(uMult);
   }
-  
+
+/**
+ * Get the current velocity vector as a PVector.
+ *
+ * @return The current velocity vector as a PVector.
+ *
+ */
   public PVector getV() {
    	PVector r=get();
    	r.sub(old);
    	return(r);
    }
-  
+
+
   public Point setPos(PVector pos) {
   	x=pos.x;
   	y=pos.y;
@@ -177,14 +298,26 @@ public class Point extends PVector {
   	old=pos.get();
   	return(this);
   }
-  
+
+/**
+ * Get the squared distance to another Point (fast).
+ *
+ * @return The squared distance value.
+ *
+ */
   public float distance2To(Point p) {
       float dx=p.x-x;
       float dy=p.y-y;
       float dz=p.z-z;
       return dx*dx+dy*dy+dz*dz;
   }
-  
+
+/**
+ * Get the distance to another Point.
+ *
+ * @return The distance value.
+ *
+ */
   public double distanceTo(Point p) {
     return(Math.sqrt(distance2To(p)));
   }
