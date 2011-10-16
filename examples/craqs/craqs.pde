@@ -36,7 +36,7 @@
 
 import saito.objloader.*;
 
-import fvlib.*;
+import volatileprototypes.fvlib.*;
 
 import processing.opengl.*;
 
@@ -67,8 +67,8 @@ float PlasticityFactor = 0.5;
 ArrayList<Point> Points;
 ArrayList<Link> Links;
 IntegratorVerlet vi;
-SolverRelaxation sr;
-ConstantForce cf;
+BehaviorSpringRelaxation sr;
+BehaviorConstantForce cf;
 PeasyCam cam;
 String model = "carbody4.obj";
 OBJModel o;
@@ -136,7 +136,7 @@ void draw() {
       }
     }
     //Drawing Function
-    /**fill(160);
+    fill(160);
     //stroke(255,20);
     for (int i=0, j=o.getFaceCount();i<j;i++) {
       PVector[] p = o.getFaceVertices(i);
@@ -149,7 +149,7 @@ void draw() {
         vertex(vtx.x,vtx.y,vtx.z);
       }
       endShape();   
-    }*/
+    }
     // Enable this if you want to display
     // a wireframe of the physics object
     // !!WARNING: VERY SLOW RENDERING!!
@@ -208,9 +208,9 @@ void importObj(String filename) {
   }
   // Initialize solvers
   vi = new IntegratorVerlet(Points).setF(Friction);      // Initialize Verlet Integration
-  sr = new SolverRelaxation(Links);                      // Initialize Relaxation Solver
+  sr = new BehaviorSpringRelaxation(Links);                      // Initialize Relaxation Solver
   //sr = new SolverRelaxation(Links).setFast(true);      // A bit faster but gooier
-  cf = new ConstantForce(Points,new PVector(0,0,Force)); // Initialize simple constant force
+  cf = new BehaviorConstantForce(Points,new PVector(0,0,Force)); // Initialize simple constant force
                                                          // solver
 }
 

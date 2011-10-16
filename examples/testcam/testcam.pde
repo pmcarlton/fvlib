@@ -1,14 +1,14 @@
 import peasy.org.apache.commons.math.*;
 import peasy.*;
 import peasy.org.apache.commons.math.geometry.*;
-import fvlib.*;
+import volatileprototypes.fvlib.*;
 import processing.opengl.*;
 
 Point[] psa;
 Link[] lsa;
 IntegratorVerlet vi;
-SolverRelaxation rs;
-SolverCamOverlap sco;
+BehaviorSpringRelaxation rs;
+BehaviorCameraOverlap sco;
 PeasyCam cam;
 
 int steps=1;
@@ -50,8 +50,8 @@ void setup() {
   }
   
   vi=new IntegratorVerlet(ps).setF(.86);
-  rs=new SolverRelaxation(ls).setFast(true);
-  sco=new SolverCamOverlap(ps,getCameraPos()).setBias(0).setRange(1).setMagnitude(.017);
+  rs=new BehaviorSpringRelaxation(ls).setFast(true);
+  sco=new BehaviorCameraOverlap(ps,getCameraPos()).setRange(1).setMagnitude(.017);
   // Convert ArrayLists to arrays for drawing performance.
   psa=new Point[ps.size()];
   lsa=new Link[ls.size()];
