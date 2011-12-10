@@ -158,14 +158,14 @@ private float R = 1.00f, R2 = R*R;
     if (fast) {fStepDist(points, step, offset);} else {StepDist(points, step, offset);}
   }
   
-  private final void fStepDist(Point[] points, int step, int offset) {
+  private final void StepDist(Point[] points, int step, int offset) {
     float d;
     float L2;
     Point p1,p2;
     float dx,dy,dz,lx,ly,lz;
     for (int i=offset,k=points.length;i<k;i+=step) {
       p1=points[i];
-	  for (int j=i+step;j<k;j+=step) {
+	  for (int j=i+1;j<k;j++) {
 		p2=points[j];
 		dx=p2.x-p1.x;
 		dy=p2.y-p1.y;
@@ -190,14 +190,14 @@ private float R = 1.00f, R2 = R*R;
   }
   
   // Faster variant with one Newton iteration.
-  private final void StepDist(Point[] points, int step, int offset) {
+  private final void fStepDist(Point[] points, int step, int offset) {
     float d;
     float L2,C2;
     Point p1,p2;
     float dx,dy,dz,lx,ly,lz;
     for (int i=offset,k=points.length;i<k;i+=step) {
       p1=points[i];
-	  for (int j=i+step;j<k;j+=step) {
+	  for (int j=i+1;j<k;j++) {
 		p2=points[j];
 		dx=p2.x-p1.x;
 		dy=p2.y-p1.y;
