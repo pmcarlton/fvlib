@@ -33,6 +33,7 @@ import java.util.concurrent.*;
 public class Solver {
 
 //  private final int numCPUs=getNumCPUs();
+  private final int numCPUs=1;
   private Collection<Caller> cr = new ArrayList<Caller>(numCPUs); 	// Pre-caching of solver
 
   static ExecutorService xs = Executors.newCachedThreadPool();		// Executor Service
