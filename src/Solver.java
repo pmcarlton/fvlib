@@ -32,7 +32,7 @@ import java.util.concurrent.*;
 
 public class Solver {
 
-//  private final int numCPUs=getNumCPUs();
+//  private final int numCPUs=getNumCPUs(); //PMC removed since it caused conflict with my Desktop Mac; 020120124pmc
   private final int numCPUs=1;
   private Collection<Caller> cr = new ArrayList<Caller>(numCPUs); 	// Pre-caching of solver
 
