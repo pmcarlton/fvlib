@@ -50,7 +50,7 @@ public class Point extends PVector {
  */
   public Point(float xin, float yin, float zin) {
     super(xin,yin,zin);
-    old=this.get();
+    old=this.copy();
     sforce=new PVector(0,0,0);
     w=w1=1f;
   }
@@ -69,7 +69,7 @@ public class Point extends PVector {
  */
   public Point(float xin, float yin, float zin, float win) {
     super(xin,yin,zin);
-    old=this.get();
+    old=this.copy();
     sforce=new PVector(0,0,0);
     w=win;
     w1=1f/win;
@@ -93,7 +93,7 @@ public class Point extends PVector {
  */
   public Point(float xin, float yin, float zin, float win, float cin, float rin) {
     super(xin,yin,zin);
-    old=this.get();
+    old=this.copy();
     sforce=new PVector(0,0,0);
     w=win;
     w1=1f/win;
@@ -112,7 +112,7 @@ public class Point extends PVector {
  */
   public Point(PVector v) {
     super(v.x,v.y,v.z);
-    old=this.get();
+    old=this.copy();
     sforce=new PVector(0,0,0);
     w=w1=1f;
   }
@@ -129,7 +129,7 @@ public class Point extends PVector {
  */
   public Point(PVector v, float win) {
     super(v.x,v.y,v.z);
-    old=this.get();
+    old=this.copy();
     sforce=new PVector(0,0,0);
     w=win;
     w1=1f/win;
@@ -151,7 +151,7 @@ public class Point extends PVector {
  */
   public Point(PVector v, float win, float cin, float rin) {
     super(v.x,v.y,v.z);
-    old=this.get();
+    old=this.copy();
     sforce=new PVector(0,0,0);
     w=win;
     w1=1f/win;
@@ -166,8 +166,8 @@ public class Point extends PVector {
  * @return The copy.
  *
  */
-  public Point copy() {
-    Point p = copy(false);
+  public Point copy2() {
+    Point p = copy2(false);
 	return(p);
   }
 
@@ -179,7 +179,7 @@ public class Point extends PVector {
  * @return The copy.
  *
  */
-  public Point copy(boolean copyVelocityAndForce) {
+  public Point copy2(boolean copyVelocityAndForce) {
 	Point p;
 	if (copyVelocityAndForce) {
 	  p = new Point(x,y,z,w,c,r);
